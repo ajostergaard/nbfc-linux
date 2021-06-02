@@ -33,7 +33,7 @@ static cli99_option cli_options[] = {
   {"-f|--fork",                'f',  0},
   {"-d|--debug",               'd',  0},
   {"-s|--state-file",          's',  1},
-  {"-c|--config-fie",          'c',  1},
+  {"-c|--config-file",         'c',  1},
   {"--critical-temperature",   '!',  1|cli99_type(float)},
   cli99_options_end()
 #undef G1

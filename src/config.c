@@ -128,7 +128,11 @@ define_array_of_T_FromJson(FanConfiguration)
 define_array_of_T_FromJson(FanSpeedPercentageOverride)
 define_array_of_T_FromJson(RegisterWriteConfiguration)
 
-static TemperatureThreshold Config_DefaultTemperatureThresholds_[] = {
+// ============================================================================
+// Default temperature thresholds
+// ============================================================================
+
+static TemperatureThreshold ___Config_DefaultTemperatureThresholds[] = {
   { 0,  0,   0},
   {60, 48,  10},
   {63, 55,  20},
@@ -138,8 +142,8 @@ static TemperatureThreshold Config_DefaultTemperatureThresholds_[] = {
 };
 
 static array_of(TemperatureThreshold) Config_DefaultTemperatureThresholds = {
-  Config_DefaultTemperatureThresholds_,
-  ARRAY_SIZE(Config_DefaultTemperatureThresholds_)
+  ___Config_DefaultTemperatureThresholds,
+  ARRAY_SIZE(___Config_DefaultTemperatureThresholds)
 };
 
 #include "generated/config.generated.c"
@@ -178,6 +182,10 @@ Error* Config_Validate(Config* c) {
       e_goto(err);
     }
     o = NULL;
+
+    // TODO #1: How to handle empty TemperatureThresholds? [see fan.c]
+    if (! f->TemperatureThresholds.size)
+      f->TemperatureThresholds = Config_DefaultTemperatureThresholds;
 
     bool has_0_FanSpeed   = false;
     bool has_100_FanSpeed = false;
