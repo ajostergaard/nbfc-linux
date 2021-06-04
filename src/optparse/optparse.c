@@ -483,7 +483,9 @@ static cli99_option_internal* cli99_MatchOptions(cli99* self) {
  *   - `-1` will be returned if an error occured
  */
 int cli99_GetOpt(cli99* self) {
+  my.optarg = NULL;
   cli99_option_internal* o = cli99_MatchOptions(self);
+
   if (! o)
     switch (my._state) {
     case cli99_state_options_end:
@@ -500,7 +502,6 @@ int cli99_GetOpt(cli99* self) {
     }
 
   my.optopt = o->option->optstring;
-  my.optarg = NULL;
 
   if (! cli99_OptionExclusiveCheck(self, o)) {
     my.error = cli99_ErrMutuallyExclusive;

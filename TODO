@@ -1,5 +1,0 @@
-nbfc_service, option-parser:
-  Gives wrong error message
-     /tmp/nbfc-linux/src > ./nbfc_service --embedded-controller=dummy --state-file=/dev/stdout --invalid-opt=foobar
-     ./nbfc_service: --invalid-opt=foobar: Unknown option: /dev/stdout
-
