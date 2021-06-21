@@ -72,6 +72,7 @@ Error* Config_FromJson(Config*, const nx_json*);
 struct ServiceConfig {
 	const char*     SelectedConfigId;
 	Boolean         ReadOnly;
+	EmbeddedControllerType EmbeddedControllerType;
 	array_of(float) TargetFanSpeeds;
 };
 

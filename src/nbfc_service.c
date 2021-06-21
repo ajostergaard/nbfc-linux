@@ -29,6 +29,7 @@ static Error* ApplyRegisterWriteConfig(int, uint8_t, RegisterWriteMode);
 static Error* ApplyRegisterWriteConfgurations(bool);
 static Error* ResetRegisterWriteConfigs();
 static Error* ResetEC();
+static Error* SetupEC(EmbeddedControllerType);
 
 Error* Service_Init() {
   Error* e;
@@ -70,21 +71,11 @@ Error* Service_Init() {
       Fan_SetAutoSpeed(&fans.data[i]);
   }
 
-  if (ec == NULL) {
-    ec = &EC_SysLinux_VTable;
-    if ((e = ec->Init()) || (e = ec->Open()))
-      ec = &EC_Linux_VTable;
-  }
-
-  e = ec->Init();
+  if (options.embedded_controller_type != EmbeddedControllerType_Unset)
+    e = SetupEC(options.embedded_controller_type); // --embedded-controller given
+  else
+    e = SetupEC(service_config.EmbeddedControllerType);
   e_check();
-  e = ec->Open();
-  e_check();
-
-  if (options.debug) {
-    EC_Debug_Controller = ec;
-    ec = &EC_Debug_VTable;
-  }
 
   e = (sensor = &FS_Sensors_VTable)->Init();
 #ifdef HAVE_SENSORS
@@ -171,6 +162,36 @@ void Service_Error(Error* e) {
   }
 
   usleep(10000);
+}
+
+static Error* SetupEC(EmbeddedControllerType ec_type) {
+  switch (ec_type) {
+    case EmbeddedControllerType_ECSysLinux:
+      ec = &EC_SysLinux_VTable;
+      fprintf(stderr, "EmbeddedControllerType = ECSysLinux");
+      break;
+    case EmbeddedControllerType_ECLinux:
+      ec = &EC_Linux_VTable;
+      fprintf(stderr, "EmbeddedControllerType = ECLinux");
+      break;
+    case EmbeddedControllerType_ECDummy:
+      ec = &EC_Dummy_VTable;
+      fprintf(stderr, "EmbeddedControllerType = Dummy");
+      break;
+    case EmbeddedControllerType_Unset:
+      abort();
+  }
+
+  if (options.debug) {
+    EC_Debug_Controller = ec;
+    ec = &EC_Debug_VTable;
+  }
+
+  Error* e = ec->Init();
+  e = ec->Init();
+  e_check();
+  e = ec->Open();
+  return e;
 }
 
 static Error* ResetEC() {

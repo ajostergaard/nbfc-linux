@@ -333,6 +333,7 @@ Error* Config_FromJson(Config* obj, const nx_json* json) {
 struct ServiceConfig ServiceConfig_Unset = {
 	str_Unset,
 	Boolean_Unset,
+	EmbeddedControllerType_Unset,
 	{NULL, 0},
 };
 
@@ -342,6 +343,9 @@ Error* ServiceConfig_ValidateFields(ServiceConfig* self) {
 
 	if (self->ReadOnly == Boolean_Unset)
 		self->ReadOnly = Boolean_False;
+
+	if (self->EmbeddedControllerType == EmbeddedControllerType_Unset)
+		self->EmbeddedControllerType = EmbeddedControllerType_ECSysLinux;
 
 	if (false)
 		return err_string(err_string(0, "TargetFanSpeeds"), "Missing option");
@@ -361,6 +365,8 @@ Error* ServiceConfig_FromJson(ServiceConfig* obj, const nx_json* json) {
 			e = str_FromJson(&obj->SelectedConfigId, c);
 		else if (!strcmp(c->key, "ReadOnly"))
 			e = Boolean_FromJson(&obj->ReadOnly, c);
+		else if (!strcmp(c->key, "EmbeddedControllerType"))
+			e = EmbeddedControllerType_FromJson(&obj->EmbeddedControllerType, c);
 		else if (!strcmp(c->key, "TargetFanSpeeds"))
 			e = array_of_float_FromJson(&obj->TargetFanSpeeds, c);
 		else

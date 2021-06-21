@@ -25,6 +25,13 @@ enum NBFC_PACKED_ENUM OverrideTargetOperation_ {
   OverrideTargetOperation_Unset,
 };
 
+enum NBFC_PACKED_ENUM EmbeddedControllerType_ {
+  EmbeddedControllerType_ECSysLinux,
+  EmbeddedControllerType_ECLinux,
+  EmbeddedControllerType_ECDummy,
+  EmbeddedControllerType_Unset,
+};
+
 enum NBFC_PACKED_ENUM Boolean_ {
   Boolean_False = 0,
   Boolean_True  = 1,
@@ -34,6 +41,7 @@ enum NBFC_PACKED_ENUM Boolean_ {
 typedef enum RegisterWriteMode_       RegisterWriteMode;
 typedef enum RegisterWriteOccasion_   RegisterWriteOccasion;
 typedef enum OverrideTargetOperation_ OverrideTargetOperation;
+typedef enum EmbeddedControllerType_  EmbeddedControllerType;
 typedef enum Boolean_                 Boolean;
 
 #else /* no packed enums */
@@ -41,6 +49,7 @@ typedef enum Boolean_                 Boolean;
 typedef char                          RegisterWriteMode;
 typedef char                          RegisterWriteOccasion;
 typedef char                          OverrideTargetOperation;
+typedef char                          EmbeddedControllerType;
 typedef char                          Boolean;
 
 #endif /* packed enums */

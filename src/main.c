@@ -48,9 +48,9 @@ static void parse_opts(int argc, char* const argv[]) {
   while ((o = cli99_GetOpt(&p))) {
     switch (o) {
     case 'e':
-      /**/ if (! strcmp(p.optarg, "dummy"))        ec = &EC_Dummy_VTable;
-      else if (! strcmp(p.optarg, "ec_linux"))     ec = &EC_Linux_VTable;
-      else if (! strcmp(p.optarg, "ec_sys_linux")) ec = &EC_SysLinux_VTable;
+      /**/ if (! strcmp(p.optarg, "dummy"))        options.embedded_controller_type = EmbeddedControllerType_ECDummy;
+      else if (! strcmp(p.optarg, "ec_linux"))     options.embedded_controller_type = EmbeddedControllerType_ECLinux;
+      else if (! strcmp(p.optarg, "ec_sys_linux")) options.embedded_controller_type = EmbeddedControllerType_ECSysLinux;
       else {
         fprintf(stderr, "Invalid value for %s: %s\n", p.optopt, p.optarg);
         exit(NBFC_EXIT_CMDLINE);
@@ -89,7 +89,7 @@ int main(int argc, char* const argv[])
 
   options.service_config = NBFC_SERVICE_CONFIG;
   options.state_file     = NBFC_STATE_FILE;
-  options.ec_name        = "";
+  options.embedded_controller_type = EmbeddedControllerType_Unset;
   parse_opts(argc, argv);
 
   if (options.read_only)

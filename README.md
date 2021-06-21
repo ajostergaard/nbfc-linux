@@ -69,6 +69,12 @@ Differences en detail
 
 - The original NBFC service provided an `Autostart` option. - NBFC Linux dropped that option, it relies on the systemd service file only.
 
+Troubleshooting
+---------------
+The preferred way of running nbfc is using the `ECSysLinux` implementation, which depends on the `ec_sys` kernel module.
+There is also an alternative implementation which uses `/dev/port`, called `ECLinux`.
+It can be specified on the commandline using `--embedded-controller=ECLinux` and permanently set in `/etc/nbfc/nbfc.json` with `"EmbeddedControllerType": "ECLinux"`.
+
 Shell autocompletion
 --------------------
 

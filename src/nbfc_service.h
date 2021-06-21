@@ -2,16 +2,17 @@
 #define NBFC_SERVICE_H_
 
 #include "error.h"
+#include "config.h"
 
 typedef struct Service_Options Service_Options;
 struct Service_Options {
-  bool         fork;
-  bool         read_only;
-  int          debug;
-  const char*  ec_name;
-  const char*  service_config;
-  const char*  state_file;
-  float        critical_temperature;
+  bool                    fork;
+  bool                    read_only;
+  int                     debug;
+  const char*             service_config;
+  const char*             state_file;
+  float                   critical_temperature;
+  EmbeddedControllerType  embedded_controller_type;
 };
 
 extern Service_Options options;

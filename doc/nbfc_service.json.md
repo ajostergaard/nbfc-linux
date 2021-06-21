@@ -17,6 +17,9 @@ Main configuration file of nbfc_service
 `"ReadOnly"`: *Boolean*
   If `true`, fan speeds will not be written to the embedded controller
 
+`"EmbeddedControllerType"`: *EmbeddedControllerType*
+  Either `ECSysLinux` for using the `ec_sys` kernel module, or `ECLinux` for an alternative implementation using `/dev/port` without depending on kernel modules.
+
 `"TargetFanSpeeds"`: *array_of(float)*
   This holds the fixed speed of the fans. A value of `-1` means the fan should be left in auto mode.
 

@@ -8,9 +8,10 @@
 #include <stdlib.h>
 
 ServiceConfig service_config = {
-  "",             /* SelectedConfigId */
-  Boolean_False,  /* ReadOnly */
-  {NULL, 0}       /* TargetFanSpeeds */
+  "",                                /* SelectedConfigId */
+  Boolean_False,                     /* ReadOnly */
+  EmbeddedControllerType_ECSysLinux, /* EmbeddedControllerType */
+  {NULL, 0}                          /* TargetFanSpeeds */
 };
 
 Error* ServiceConfig_Init(const char* file) {

@@ -5,7 +5,7 @@
 EC_VTable* EC_Debug_Controller;
 
 Error* EC_Debug_Init() {
-  return err_success();
+  return EC_Debug_Controller->Init();
 }
 
 Error* EC_Debug_Open() {

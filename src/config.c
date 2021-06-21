@@ -100,6 +100,17 @@ static Error* OverrideTargetOperation_FromJson(OverrideTargetOperation* v, const
   return e;
 }
 
+static Error* EmbeddedControllerType_FromJson(EmbeddedControllerType* v, const nx_json* json) {
+  const char* s = NULL;
+  Error* e = nx_json_get_str(&s, json);
+  if (e) return e;
+  else if (!strcmp(s, "ECSysLinux")) *v = EmbeddedControllerType_ECSysLinux;
+  else if (!strcmp(s, "ECLinux"))    *v = EmbeddedControllerType_ECLinux;
+  else if (!strcmp(s, "ECDummy"))    *v = EmbeddedControllerType_ECDummy;
+  else return err_string(0, "Invalid value for EmbeddedControllerType");
+  return e;
+}
+
 typedef Error* (FromJson_Callback)(void*, const nx_json*);
 
 static Error* array_of_FromJson(FromJson_Callback callback, void** v_data, size_t* v_size, size_t size, const nx_json* json) {
