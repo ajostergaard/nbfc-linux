@@ -168,15 +168,15 @@ static Error* SetupEC(EmbeddedControllerType ec_type) {
   switch (ec_type) {
     case EmbeddedControllerType_ECSysLinux:
       ec = &EC_SysLinux_VTable;
-      fprintf(stderr, "EmbeddedControllerType = ECSysLinux");
+      fprintf(stderr, "EmbeddedControllerType = ECSysLinux\n");
       break;
     case EmbeddedControllerType_ECLinux:
       ec = &EC_Linux_VTable;
-      fprintf(stderr, "EmbeddedControllerType = ECLinux");
+      fprintf(stderr, "EmbeddedControllerType = ECLinux\n");
       break;
     case EmbeddedControllerType_ECDummy:
       ec = &EC_Dummy_VTable;
-      fprintf(stderr, "EmbeddedControllerType = Dummy");
+      fprintf(stderr, "EmbeddedControllerType = Dummy\n");
       break;
     case EmbeddedControllerType_Unset:
       abort();
