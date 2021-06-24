@@ -52,7 +52,7 @@ class FishCompleter(shell.ShellCompleter):
 
 _fish_complete = FishCompleter().complete
 
-def _fish_get_exclusive_options(info, p, action):
+def _fish_get_exclusive_options(info, action):
     l = set()
     for a in info.get_conflicting_options(action):
         l.update(a.option_strings)
@@ -66,7 +66,7 @@ def _fish_get_exclusive_options(info, p, action):
 def _fish_complete_action(info, p, action, prog, subcommand=None):
     r = "complete -c %s" % shell.escape(prog)
 
-    r += _fish_get_exclusive_options(info, p, action)
+    r += _fish_get_exclusive_options(info, action)
 
     if subcommand:
         r += f" -n '__fish_seen_subcommand_from {subcommand}'"

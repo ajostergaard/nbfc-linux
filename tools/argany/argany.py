@@ -34,21 +34,15 @@ def generate(opts):
         sys.exit(1)
 
     utils.add_help_to_subparsers(parser)
-    actions = utils.remove_help_actions(parser)
-    actions.apply()
-    #actions.print()
 
-    try:
-        r = {
-            'bash':     bash.generate_completion,
-            'fish':     fish.generate_completion,
-            'zsh':      zsh.generate_completion,
-            'man':      man.generate_man,
-            'printf':   printf.generate_printf_usage,
-            'markdown': markdown.generate_markdown,
-        }[opts.action](parser)
-    finally:
-        actions.restore()
+    r = {
+        'bash':     bash.generate_completion,
+        'fish':     fish.generate_completion,
+        'zsh':      zsh.generate_completion,
+        'man':      man.generate_man,
+        'printf':   printf.generate_printf_usage,
+        'markdown': markdown.generate_markdown,
+    }[opts.action](parser)
 
     if opts.output is not None:
         with open(opts.output, 'w') as fh:
