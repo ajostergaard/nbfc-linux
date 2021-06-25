@@ -63,8 +63,8 @@ def _fish_get_exclusive_options(info, action):
 
     return ''
 
-def _fish_complete_action(info, p, action, prog, subcommand=None):
-    r = "complete -c %s" % shell.escape(prog)
+def _fish_complete_action(info, parser, action, prog, subcommand=None):
+    r = "complete -c " + shell.escape(prog)
 
     r += _fish_get_exclusive_options(info, action)
 
@@ -74,14 +74,14 @@ def _fish_complete_action(info, p, action, prog, subcommand=None):
     if not action.option_strings:
         r += " -n 'test (__fish_number_of_cmd_args_wo_opts) = %d'" % (1+info.get_positional_index(action))
     else:
-        for optstr in action.option_strings:
+        for optstr in sorted(action.option_strings):
             if optstr.startswith('--'):
-                r += " -l %s" % shell.escape(optstr[2:])
+                r += ' -l ' + shell.escape(optstr[2:])
             elif optstr.startswith('-'):
-                r += " -s %s" % shell.escape(optstr[1:])
+                r += ' -s ' + shell.escape(optstr[1:])
 
     if action.help:
-            r += ' -d %s' % shell.escape(action.help)
+            r += ' -d ' + shell.escape(action.help)
 
     if action.requires_args():
         r += ' -r'
@@ -90,22 +90,22 @@ def _fish_complete_action(info, p, action, prog, subcommand=None):
 
     return r.rstrip()
 
-def _fish_generate_subcommands_complete(info, p, prog):
+def _fish_generate_subcommands_complete(info, parser, prog):
     r = ''
-    subcommands = ' '.join(shell.escape(s) for s in p.get_subparsers().keys())
-    for name, sub in p.get_subparsers().items():
-      r += "complete -c %s -f -n \"not __fish_seen_subcommand_from %s\" -a %s -d %s\n" % (
+    subcommands = ' '.join(shell.escape(s) for s in parser.get_subparsers().keys())
+    for name, sub in parser.get_subparsers().items():
+      r += 'complete -c %s -f -n "not __fish_seen_subcommand_from %s" -a %s -d %s\n' % (
         shell.escape(prog), subcommands, shell.escape(name), shell.escape(sub.get_help()))
     return r
 
-def _fish_generate_completion(info, p, prog, subparser=None):
+def _fish_generate_completion(info, parser, prog, subparser=None):
     r = ''
-    for a in p._actions:
-        r += '%s\n' % _fish_complete_action(info, p, a, prog, subparser)
+    for a in parser._actions:
+        r += '%s\n' % _fish_complete_action(info, parser, a, prog, subparser)
 
-    subparsers = p.get_subparsers()
+    subparsers = parser.get_subparsers()
     if len(subparsers):
-        r += _fish_generate_subcommands_complete(info, p, prog)
+        r += _fish_generate_subcommands_complete(info, parser, prog)
 
         for name, sub in subparsers.items():
             r += _fish_generate_completion(info, sub, prog, name)

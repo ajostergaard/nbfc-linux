@@ -87,6 +87,9 @@ def _bash_case_option_strings(action):
     return '|'.join(map(shell.escape, sorted(action.option_strings)))
 
 def _bash_make_optstring_test_pattern(p):
+    # Return the smallest pattern for matching optionals which take arguments
+    # [[ $string == $pattern ]]
+
     option_strings, short_opts, long_opts = [], [], []
     for a in filter(lambda a: a.takes_args(), p._actions):
         option_strings.extend(a.option_strings)
@@ -95,7 +98,7 @@ def _bash_make_optstring_test_pattern(p):
             elif o.startswith('-'):   short_opts.append(o[1:])
 
     if len(option_strings) == 0:
-        return ''
+        raise Exception("Empty test pattern") # TODO?
 
     if len(option_strings) == 1:
         return option_strings[0]

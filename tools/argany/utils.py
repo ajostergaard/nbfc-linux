@@ -144,35 +144,3 @@ def limit_choices(choices, n=10):
     if len(choices) > n:
         return choices[:10] + ['...']
     return choices
-
-#class ArgparseInfo:
-#    def __init__(self, parser, parent=None):
-#        self.parser = parser
-#        self.action_conflicts = {}
-#        self.positionals = []
-#        self.subparsers = {}
-#        self.parent = parent
-#
-#        for a in parser._actions:
-#            if isinstance(a, argparse._SubParsersAction):
-#                i = 0
-#                for name, subparser in a.choices.items():
-#                    sub = ArgparseInfo(subparser, self)
-#                    sub.parser.help = a._get_subactions()[i].help
-#                    self.subparsers[name] = sub
-#                    i += 1
-#            else:
-#                self.handle_action(a)
-#
-#    def handle_action(self, action):
-#        for optstr in action.option_strings:
-#            if not optstr.startswith('-'):
-#                self.positionals.append(action)
-#                return
-#
-#        for mutex_group in self.parser._mutually_exclusive_groups:
-#            group_actions = mutex_group._group_actions
-#            for i, mutex_action in enumerate(mutex_group._group_actions):
-#                conflicts = self.action_conflicts.setdefault(mutex_action, [])
-#                conflicts.extend(group_actions[:i])
-#                conflicts.extend(group_actions[i + 1:])
