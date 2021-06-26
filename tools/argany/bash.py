@@ -98,7 +98,7 @@ def _bash_make_optstring_test_pattern(p):
             elif o.startswith('-'):   short_opts.append(o[1:])
 
     if len(option_strings) == 0:
-        raise Exception("Empty test pattern") # TODO?
+        return '' # raise Exception("Empty test pattern") # TODO?
 
     if len(option_strings) == 1:
         return option_strings[0]

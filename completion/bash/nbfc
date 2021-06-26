@@ -17,7 +17,7 @@ _nbfc() {
     esac
   done
 
-  [[ "$cur" = -* ]] && COMPREPLY+=($(compgen -W '-h --help' -- "$cur"))
+  [[ "$cur" = -* ]] && COMPREPLY+=($(compgen -W '-h --help --version' -- "$cur"))
 
   case $args in
     1)

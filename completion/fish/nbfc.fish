@@ -1,12 +1,13 @@
 complete -c nbfc -s h -l help -d 'show this help message and exit'
+complete -c nbfc -l version -d "show program's version number and exit"
 complete -c nbfc -n 'test (__fish_number_of_cmd_args_wo_opts) = 1' -f -a 'start stop restart status config set help'
-complete -c nbfc -f -n "not __fish_seen_subcommand_from start stop restart status config set help" -a start -d 'Start the service'
-complete -c nbfc -f -n "not __fish_seen_subcommand_from start stop restart status config set help" -a stop -d 'Stop the service'
-complete -c nbfc -f -n "not __fish_seen_subcommand_from start stop restart status config set help" -a restart -d 'Restart the service'
-complete -c nbfc -f -n "not __fish_seen_subcommand_from start stop restart status config set help" -a status -d 'Show the service status'
-complete -c nbfc -f -n "not __fish_seen_subcommand_from start stop restart status config set help" -a config -d 'List or apply configs'
-complete -c nbfc -f -n "not __fish_seen_subcommand_from start stop restart status config set help" -a set -d 'Control fan speed'
-complete -c nbfc -f -n "not __fish_seen_subcommand_from start stop restart status config set help" -a help -d 'Show help'
+complete -c nbfc -f -n 'not __fish_seen_subcommand_from config help restart set start status stop' -d 'Start the service' -a start
+complete -c nbfc -f -n 'not __fish_seen_subcommand_from config help restart set start status stop' -d 'Stop the service' -a stop
+complete -c nbfc -f -n 'not __fish_seen_subcommand_from config help restart set start status stop' -d 'Restart the service' -a restart
+complete -c nbfc -f -n 'not __fish_seen_subcommand_from config help restart set start status stop' -d 'Show the service status' -a status
+complete -c nbfc -f -n 'not __fish_seen_subcommand_from config help restart set start status stop' -d 'List or apply configs' -a config
+complete -c nbfc -f -n 'not __fish_seen_subcommand_from config help restart set start status stop' -d 'Control fan speed' -a set
+complete -c nbfc -f -n 'not __fish_seen_subcommand_from config help restart set start status stop' -d 'Show help' -a help
 complete -c nbfc -n '__fish_seen_subcommand_from start' -s h -l help -d 'show this help message and exit'
 complete -c nbfc -n '__fish_seen_subcommand_from start' -s e -l enabled -d 'Start in enabled mode (default)'
 complete -c nbfc -n '__fish_seen_subcommand_from start' -s r -l readonly -d 'Start in read-only mode'
@@ -15,17 +16,17 @@ complete -c nbfc -n '__fish_seen_subcommand_from restart' -s h -l help -d 'show 
 complete -c nbfc -n '__fish_seen_subcommand_from restart' -s e -l enabled -d 'Restart in enabled mode (default)'
 complete -c nbfc -n '__fish_seen_subcommand_from restart' -s r -l readonly -d 'Restart in read-only mode'
 complete -c nbfc -n '__fish_seen_subcommand_from status' -s h -l help -d 'show this help message and exit'
-complete -c nbfc -n 'not __fish_contains_opt fan service -s f -s s' -n '__fish_seen_subcommand_from status' -s a -l all -d 'Show service and fan status (default)'
-complete -c nbfc -n 'not __fish_contains_opt all fan -s a -s f' -n '__fish_seen_subcommand_from status' -s s -l service -d 'Show service status'
-complete -c nbfc -n 'not __fish_contains_opt all service -s a -s s' -n '__fish_seen_subcommand_from status' -s f -l fan -d 'Show fan status' -r
-complete -c nbfc -n '__fish_seen_subcommand_from status' -s w -l watch -d 'Show status periodically' -r
+complete -c nbfc -n '__fish_seen_subcommand_from status' -n 'not __fish_contains_opt fan service f s' -s a -l all -d 'Show service and fan status (default)'
+complete -c nbfc -n '__fish_seen_subcommand_from status' -n 'not __fish_contains_opt all fan a f' -s s -l service -d 'Show service status'
+complete -c nbfc -r -n '__fish_seen_subcommand_from status' -n 'not __fish_contains_opt all service a s' -s f -l fan -d 'Show fan status'
+complete -c nbfc -r -n '__fish_seen_subcommand_from status' -s w -l watch -d 'Show status periodically'
 complete -c nbfc -n '__fish_seen_subcommand_from config' -s h -l help -d 'show this help message and exit'
-complete -c nbfc -n 'not __fish_contains_opt apply recommend set -s a -s r -s s' -n '__fish_seen_subcommand_from config' -s l -l list -d 'List all available configs (default)'
-complete -c nbfc -n 'not __fish_contains_opt apply list recommend -s a -s l -s r' -n '__fish_seen_subcommand_from config' -s s -l set -d 'Set a config' -r -F
-complete -c nbfc -n 'not __fish_contains_opt list recommend set -s l -s r -s s' -n '__fish_seen_subcommand_from config' -s a -l apply -d 'Set a config and enable fan control' -r -F
-complete -c nbfc -n 'not __fish_contains_opt apply list set -s a -s l -s s' -n '__fish_seen_subcommand_from config' -s r -l recommend -d 'List configs which may work for your device'
+complete -c nbfc -n '__fish_seen_subcommand_from config' -n 'not __fish_contains_opt apply recommend set a r s' -s l -l list -d 'List all available configs (default)'
+complete -c nbfc -r -n '__fish_seen_subcommand_from config' -n 'not __fish_contains_opt apply list recommend a l r' -s s -l set -d 'Set a config' -F
+complete -c nbfc -r -n '__fish_seen_subcommand_from config' -n 'not __fish_contains_opt list recommend set l r s' -s a -l apply -d 'Set a config and enable fan control' -F
+complete -c nbfc -n '__fish_seen_subcommand_from config' -n 'not __fish_contains_opt apply list set a l s' -s r -l recommend -d 'List configs which may work for your device'
 complete -c nbfc -n '__fish_seen_subcommand_from set' -s h -l help -d 'show this help message and exit'
-complete -c nbfc -n 'not __fish_contains_opt speed -s s' -n '__fish_seen_subcommand_from set' -s a -l auto -d "Set fan speed to 'auto'"
-complete -c nbfc -n 'not __fish_contains_opt auto -s a' -n '__fish_seen_subcommand_from set' -s s -l speed -d 'Set fan speed to PERCENT' -r
-complete -c nbfc -n '__fish_seen_subcommand_from set' -s f -l fan -d 'Fan index (zero based)' -r
+complete -c nbfc -n '__fish_seen_subcommand_from set' -n 'not __fish_contains_opt speed s' -s a -l auto -d "Set fan speed to 'auto'"
+complete -c nbfc -r -n '__fish_seen_subcommand_from set' -n 'not __fish_contains_opt auto a' -s s -l speed -d 'Set fan speed to PERCENT'
+complete -c nbfc -r -n '__fish_seen_subcommand_from set' -s f -l fan -d 'Fan index (zero based)'
 complete -c nbfc -n '__fish_seen_subcommand_from help' -s h -l help -d 'show this help message and exit'

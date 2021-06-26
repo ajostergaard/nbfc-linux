@@ -3,6 +3,7 @@
 _nbfc() {
   _arguments \
     '(--help -h)'{--help,-h}'[show this help message and exit]'::'()'\
+    '(--version)'--version"[show program's version number and exit]"::'()'\
     ':command:_nbfc_subcommands'\
     '*::arg:->args'
   for w in $line; do
