@@ -36,7 +36,7 @@ Error* Service_Init() {
 
   e = ServiceConfig_Init(options.service_config);
   e_check();
-  fprintf(stderr, "Using %s\n", service_config.SelectedConfigId);
+  fprintf(stderr, "Using '%s' as model config\n", service_config.SelectedConfigId);
 
   char* path = (char*)Temp_Malloc(PATH_MAX, 1);
   snprintf(path, PATH_MAX, "./%s/%s.json", NBFC_CONFIGS_DIR, service_config.SelectedConfigId);
@@ -168,15 +168,15 @@ static Error* SetupEC(EmbeddedControllerType ec_type) {
   switch (ec_type) {
     case EmbeddedControllerType_ECSysLinux:
       ec = &EC_SysLinux_VTable;
-      fprintf(stderr, "EmbeddedControllerType = ECSysLinux\n");
+      fprintf(stderr, "Using 'ECSysLinux' as EmbeddedControllerType\n");
       break;
     case EmbeddedControllerType_ECLinux:
       ec = &EC_Linux_VTable;
-      fprintf(stderr, "EmbeddedControllerType = ECLinux\n");
+      fprintf(stderr, "Using 'ECLinux' as EmbeddedControllerType\n");
       break;
     case EmbeddedControllerType_ECDummy:
       ec = &EC_Dummy_VTable;
-      fprintf(stderr, "EmbeddedControllerType = Dummy\n");
+      fprintf(stderr, "Using 'Dummy' as EmbeddedControllerType\n");
       break;
     case EmbeddedControllerType_Unset:
       abort();
