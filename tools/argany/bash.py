@@ -86,25 +86,25 @@ def _bash_complete_action(action, append=True):
 def _bash_case_option_strings(action):
     return '|'.join(map(shell.escape, sorted(action.option_strings)))
 
-def _bash_make_optstring_test_pattern(p):
+def _bash_make_optstring_test_pattern(option_strings):
     # Return the smallest pattern for matching optionals which take arguments
     # [[ $string == $pattern ]]
 
-    option_strings, short_opts, long_opts = [], [], []
-    for a in filter(lambda a: a.takes_args(), p._actions):
-        option_strings.extend(a.option_strings)
-        for o in a.option_strings:
-            if   o.startswith('--'):  long_opts.append(o[2:])
-            elif o.startswith('-'):   short_opts.append(o[1:])
+    option_strings = sorted(option_strings)
 
     if len(option_strings) == 0:
-        return '' # raise Exception("Empty test pattern") # TODO?
+        return '' # TODO?
 
     if len(option_strings) == 1:
         return option_strings[0]
 
     if len(option_strings) <= 3:
-        return '@(%s)' % '|'.join(sorted(option_strings))
+        return '@(%s)' % '|'.join(option_strings)
+
+    short_opts, long_opts = [], []
+    for o in a.option_strings:
+        if   o.startswith('--'):  long_opts.append(o[2:])
+        elif o.startswith('-'):   short_opts.append(o[1:])
 
     if not len(short_opts):
         return '--@(%s)' % '|'.join(sorted(long_opts))
@@ -115,8 +115,7 @@ def _bash_make_optstring_test_pattern(p):
     return "-@([%s]|-@(%s))" % (''.join(sorted(short_opts)), '|'.join(sorted(long_opts)))
 
 def _bash_complete_parser(info, p, funcname, parent_parsers=[]):
-    funcname = shell.make_identifier(funcname)
-
+    funcname    = shell.make_identifier(funcname)
     options     = p.get_options()
     positionals = p.get_positionals()
     subparsers  = p.get_subparsers()
@@ -124,12 +123,18 @@ def _bash_complete_parser(info, p, funcname, parent_parsers=[]):
     r  = f'{funcname}() {{\n'
 
     if len(parent_parsers) == 0:
+        # The root parser makes those variables local and sets up the completion.
+        # Calls to subparser function modify these variables.
         r += '  local cur prev words cword split args w\n'
         r += '  _init_completion -s || return\n'
         r += '\n'
 
         if len(positionals):
-            exclude_pattern = _bash_make_optstring_test_pattern(p)
+            # The call to _count_args allows us to complete positionals later.
+            option_strings = []
+            for a in filter(lambda a: a.takes_args(), p._actions):
+                option_strings.extend(a.option_strings)
+            exclude_pattern = _bash_make_optstring_test_pattern(option_strings)
             r += '  _count_args "" "%s"\n' % exclude_pattern
 
     if len(subparsers):

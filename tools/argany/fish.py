@@ -92,7 +92,7 @@ def _fish_make_complete(
         conditions += ["test (__fish_number_of_cmd_args_wo_opts) = %d" % positional]
 
     if len(conditions):
-        r += " -n '%s'" % (' && '.join(conditions))
+        r += " -n %s" % shell.escape(' && '.join(conditions))
 
     for o in sorted(short_options): r += ' -s ' + shell.escape(o.lstrip('-'))
     for o in sorted(long_options):  r += ' -l ' + shell.escape(o.lstrip('-'))
@@ -145,7 +145,7 @@ def _fish_complete_action(info, parser, action, program_name, parent_commands=[]
 
 def _fish_complete_parser(info, parser, program_name, parent_commands=[]):
     # `parent_commands` is used to ensure that options of a command only show up
-    #  if the command[s] is present on the commandline. (see `seen_words`)
+    #  if the command is present on the commandline. (see `seen_words`)
 
     r = ''
 
