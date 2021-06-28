@@ -6,39 +6,6 @@ class ZshCompleter(shell.ShellCompleter):
     def none(self):
         return "'()'"
 
-    def file(self, glob_pattern=None):
-        if not glob_pattern:
-            return '_files'
-        else:
-            return shell.escape('_files -G '+glob_pattern)
-
-    def directory(self, glob_pattern=None):
-        if not glob_pattern:
-            return '_directories'
-        else:
-            return shell.escape('_directories -G '+glob_pattern)
-
-    def variable(self):
-        return '_vars'
-
-    def command(self):
-        return '_command_names'
-
-    def user(self):
-        return '_users'
-
-    def group(self):
-        return '_groups'
-
-    def hostname(self):
-        return '_hosts'
-
-    def process(self):
-        return '_process_names'
-
-    def pid(self):
-        return '_pids'
-
     def choices(self, choices):
         if hasattr(choices, 'items'):
             return shell.escape('((%s))' % ' '.join(
@@ -47,11 +14,44 @@ class ZshCompleter(shell.ShellCompleter):
         else:
             return shell.escape("(%s)" % (' '.join(shell.escape(str(c)) for c in choices)))
 
+    def command(self):
+        return '_command_names'
+
+    def directory(self, glob_pattern=None):
+        if not glob_pattern:
+            return '_directories'
+        else:
+            return shell.escape('_directories -G '+glob_pattern)
+
+    def file(self, glob_pattern=None):
+        if not glob_pattern:
+            return '_files'
+        else:
+            return shell.escape('_files -G '+glob_pattern)
+
+    def group(self):
+        return '_groups'
+
+    def hostname(self):
+        return '_hosts'
+
+    def pid(self):
+        return '_pids'
+
+    def process(self):
+        return '_process_names'
+
     def range(self, range):
         if range.step == 1:
             return f"'({{{range.start}..{range.stop}}})'"
         else:
             return f"'({{{range.start}..{range.stop}..{range.step}}})'"
+
+    def user(self):
+        return '_users'
+
+    def variable(self):
+        return '_vars'
 
 
 _zsh_complete = ZshCompleter().complete
@@ -116,65 +116,57 @@ def _zsh_complete_action(info, parser, action):
             action = _zsh_complete(*shell.action_get_completer(action)))
 
     elif isinstance(action, argparse._SubParsersAction):
-        return "':command:%s'" % shell.make_subparser_identifier(parser.prog)
+        choices = {}
+        for name, subparser in parser.get_subparsers().items():
+            choices[name] = subparser.get_help()
+        return ":command:" + _zsh_complete('choices', choices)
+        #return "':command:%s'" % shell.make_subparser_identifier(parser.prog)
     else:
         return ":%s:%s" % (
             shell.escape(escape_colon(action.help)) if action.help else '',
             _zsh_complete(*shell.action_get_completer(action)))
 
-def _zsh_generate_subcommands_complete(info, parser):
-    commands = '\n    '.join(f"'{name}:{sub.get_help()}'" for name, sub in parser.get_subparsers().items())
-
-    return f'''\
-{shell.make_subparser_identifier(parser.prog)}() {{
-  local commands=(
-    {commands}
-  )
-  _describe -t commands '{parser.prog} command' commands "$@"
-}}\n\n'''
-
-def _zsh_generate_arguments(info, parser, funcname):
+def _zsh_generate_completion_func(info, parser, funcname):
     args = []
+    trailing_functions = ''
+    r =  f'{funcname}() {{\n'
 
     for action in parser._actions:
         args.append(_zsh_complete_action(info, parser, action))
+
     if len(parser.get_subparsers()):
         args.append("'*::arg:->args'")
 
     if len(args):
-        return '  _arguments \\\n    %s\n' % '\\\n    '.join(args)
-
-    return ''
-
-def _zsh_generate_completion_func(info, parser, funcname):
-    PS = '' # P.S. I love you
-
-    r =  f'{funcname}() {{\n'
-    r += _zsh_generate_arguments(info, parser, funcname)
+        r += '  _arguments \\\n    %s\n' % '\\\n    '.join(args)
 
     subparsers = parser.get_subparsers()
     if len(subparsers):
-        PS += _zsh_generate_subcommands_complete(info, parser)
-
         r += '  for w in $line; do\n'
         r += '    case $w in\n'
         for name, subparser in subparsers.items():
             sub_funcname = shell.make_identifier(f'_{funcname}_{name}')
-            PS += _zsh_generate_completion_func(info, subparser, sub_funcname)
+            trailing_functions += _zsh_generate_completion_func(info, subparser, sub_funcname)
             r += f'      ({name}) {sub_funcname}; break;;\n'
         r += '    esac\n'
         r += '  done\n'
     r += '}\n\n'
 
-    return r + PS
+    return r + trailing_functions
 
-def generate_completion(parser, prog=None):
-    if prog is None:
-        prog = parser.prog
+def generate_completion(parser, program_name=None):
+    if program_name is None:
+        program_name = parser.prog
 
     info = utils.ArgparseInfo.create(parser)
-    r  = f'#compdef {prog}\n\n'
-    r += _zsh_generate_completion_func(info, parser, '_'+shell.make_identifier(prog)).rstrip()
-    r += f'\n\n_%s "$@"' % shell.make_identifier(prog)
-    return r
+    completion_funcname = '_' + shell.make_identifier(program_name)
+    completion_functions = _zsh_generate_completion_func(info, parser, completion_funcname)
+
+    return f'''\
+#compdef {program_name}
+
+{completion_functions.rstrip()}
+
+{completion_funcname} "$@"
+'''
 

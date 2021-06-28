@@ -9,45 +9,45 @@ class FishCompleter(shell.ShellCompleter):
     def choices(self, choices):
         return '-f -a ' + shell.escape(' '.join(shell.escape(str(c)) for c in choices))
 
-    def file(self, glob_pattern=None):
-        if glob_pattern:
-            print("Warning, glob_pattern `%s' ignored\n" % glob_pattern, file=sys.stderr)
-        return '-F'
+    def command(self):
+        return "-f -a '(__fish_complete_command)'"
 
     def directory(self, glob_pattern=None):
         if glob_pattern:
             return "-f -a '(__fish_complete_directories %s)'" % shell.escape(glob_pattern)
         return "-f -a '(__fish_complete_directories)'"
 
+    def file(self, glob_pattern=None):
+        if glob_pattern:
+            print("Warning, glob_pattern `%s' ignored\n" % glob_pattern, file=sys.stderr)
+        return '-F'
+
+    def group(self):
+        return "-f -a '(__fish_complete_groups)'"
+
     def hostname(self):
         return "-f -a '(__fish_print_hostnames)'"
-
-    def process(self):
-        return "-f -a '(__fish_complete_proc)'"
-
-    def command(self):
-        return "-f -a '(__fish_complete_command)'"
-
-    def service(self):
-        return "-f -a '(__fish_systemctl_services)'"
-
-    def variable(self):
-        return "-f -a '(set -n)'"
-
-    def user(self):
-        return "-f -a '(__fish_complete_users)'"
 
     def pid(self):
         return "-f -a '(__fish_complete_pids)'"
 
-    def group(self):
-        return "-f -a '(__fish_complete_groups)'"
+    def process(self):
+        return "-f -a '(__fish_complete_proc)'"
 
     def range(self, range):
         if range.step == 1:
             return f"-f -a '(seq {range.start} {range.stop})'"
         else:
             return f"-f -a '(seq {range.start} {range.step} {range.stop})'"
+
+    def service(self):
+        return "-f -a '(__fish_systemctl_services)'"
+
+    def user(self):
+        return "-f -a '(__fish_complete_users)'"
+
+    def variable(self):
+        return "-f -a '(set -n)'"
 
 
 _fish_complete = FishCompleter().complete
@@ -58,6 +58,7 @@ def _fish_join_escaped(l, delimiter=' '):
 # =============================================================================
 # Helper function for creating a `complete` command in fish
 # =============================================================================
+
 def _fish_make_complete(
       program_name,            # Name of program beeing completed
       short_options=[],        # List of short options

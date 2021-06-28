@@ -31,11 +31,11 @@ class BashCompleter(shell.ShellCompleter):
     def none(self):
         return BashCompletionCommand('')
 
-    def file(self, glob_pattern=None):
-        if not glob_pattern:
-            return compgen('-f')
-        else:
-            return compgen('-G ' + shell.escape(glob_pattern))
+    def choices(self, choices):
+        return compgen('-W '+ shell.escape(' '.join(shell.escape(str(c)) for c in choices)))
+
+    def command(self):
+        return compgen('-A command')
 
     def directory(self, glob_pattern=None):
         if not glob_pattern:
@@ -43,38 +43,38 @@ class BashCompleter(shell.ShellCompleter):
         else:
             return compgen('-G ' + shell.escape(glob_pattern))
 
-    def user(self):
-        return compgen('-A user')
+    def file(self, glob_pattern=None):
+        if not glob_pattern:
+            return compgen('-f')
+        else:
+            return compgen('-G ' + shell.escape(glob_pattern))
 
     def group(self):
         return compgen('-A group')
 
-    def process(self):
-        return BashCompletionCommand('_pnames')
+    def hostname(self):
+        return compgen('-A hostname')
 
     def pid(self):
         return BashCompletionCommand('_pids')
 
-    def service(self):
-        return compgen('-A service')
-
-    def variable(self):
-        return compgen('-A variable')
-
-    def command(self):
-        return compgen('-A command')
-
-    def hostname(self):
-        return compgen('-A hostname')
-
-    def choices(self, choices):
-        return compgen('-W '+ shell.escape(' '.join(shell.escape(str(c)) for c in choices)))
+    def process(self):
+        return BashCompletionCommand('_pnames')
 
     def range(self, range):
         if range.step == 1:
             return compgen(f"-W '{{{range.start}..{range.stop}}}'")
         else:
             return compgen(f"-W '{{{range.start}..{range.stop}..{range.step}}}'")
+
+    def service(self):
+        return compgen('-A service')
+
+    def user(self):
+        return compgen('-A user')
+
+    def variable(self):
+        return compgen('-A variable')
 
 
 _bash_complete = BashCompleter().complete

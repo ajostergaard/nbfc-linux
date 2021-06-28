@@ -4,7 +4,7 @@ _nbfc() {
   _arguments \
     '(--help -h)'{--help,-h}'[show this help message and exit]'::'()'\
     '(--version)'--version"[show program's version number and exit]"::'()'\
-    ':command:_nbfc_subcommands'\
+    :command:"(('start\\:Start the service' 'stop\\:Stop the service' 'restart\\:Restart the service' 'status\\:Show the service status' 'config\\:List or apply configs' 'set\\:Control fan speed' 'help\\:Show help'))"\
     '*::arg:->args'
   for w in $line; do
     case $w in
@@ -17,19 +17,6 @@ _nbfc() {
       (help) _nbfc_help; break;;
     esac
   done
-}
-
-_nbfc_subcommands() {
-  local commands=(
-    'start:Start the service'
-    'stop:Stop the service'
-    'restart:Restart the service'
-    'status:Show the service status'
-    'config:List or apply configs'
-    'set:Control fan speed'
-    'help:Show help'
-  )
-  _describe -t commands 'nbfc command' commands "$@"
 }
 
 _nbfc_start() {
