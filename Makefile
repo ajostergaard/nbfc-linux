@@ -1,3 +1,5 @@
+ARGPARSE_TOOL = argparse-tool
+
 build: src/nbfc_service src/ec_probe
 
 install: build
@@ -38,7 +40,7 @@ install: build
 	cp completion/fish/ec_probe.fish       $(DESTDIR)/usr/share/fish/completions/
 
 clean:
-	rm -rf __pycache__ tools/argany/__pycache__
+	rm -rf __pycache__ tools/argparse-tool/__pycache__
 	(cd src; make clean)
 
 clean_generated: clean
@@ -73,18 +75,17 @@ etc/nbfc/configs: .force
 completion: .force
 	mkdir -p completion/bash completion/fish completion/zsh
 	
-	./tools/argany/argany.py\
-		zsh  ./nbfc.py -o completion/zsh/_nbfc      ';'\
-	  fish ./nbfc.py -o completion/fish/nbfc.fish ';'\
-	  bash ./nbfc.py -o completion/bash/nbfc      ';'\
-		\
-	  zsh  ./tools/argany/nbfc_service.py -o completion/zsh/_nbfc_service      ';'\
-	  fish ./tools/argany/nbfc_service.py -o completion/fish/nbfc_service.fish ';'\
-	  bash ./tools/argany/nbfc_service.py -o completion/bash/nbfc_service      ';'\
-		\
-	  zsh  ./tools/argany/ec_probe.py -o completion/zsh/_ec_probe      ';'\
-	  fish ./tools/argany/ec_probe.py -o completion/fish/ec_probe.fish ';'\
-	  bash ./tools/argany/ec_probe.py -o completion/bash/ec_probe
+	$(ARGPARSE_TOOL) zsh  ./nbfc.py -o completion/zsh/_nbfc
+	$(ARGPARSE_TOOL) fish ./nbfc.py -o completion/fish/nbfc.fish
+	$(ARGPARSE_TOOL) bash ./nbfc.py -o completion/bash/nbfc
+	
+	$(ARGPARSE_TOOL) zsh  ./tools/argparse-tool/nbfc_service.py -o completion/zsh/_nbfc_service
+	$(ARGPARSE_TOOL) fish ./tools/argparse-tool/nbfc_service.py -o completion/fish/nbfc_service.fish
+	$(ARGPARSE_TOOL) bash ./tools/argparse-tool/nbfc_service.py -o completion/bash/nbfc_service
+	
+	$(ARGPARSE_TOOL) zsh  ./tools/argparse-tool/ec_probe.py -o completion/zsh/_ec_probe
+	$(ARGPARSE_TOOL) fish ./tools/argparse-tool/ec_probe.py -o completion/fish/ec_probe.fish
+	$(ARGPARSE_TOOL) bash ./tools/argparse-tool/ec_probe.py -o completion/bash/ec_probe
 
 # =============================================================================
 # Documentation ===============================================================
@@ -93,12 +94,11 @@ completion: .force
 doc: .force
 	mkdir -p doc
 	
-	./tools/argany/argany.py \
-		markdown ./tools/ec_probe.py     -o doc/ec_probe.md     ';' \
-	  markdown ./tools/nbfc_service.py -o doc/nbfc_service.md ';' \
-	  markdown nbfc.py                 -o doc/nbfc.md
+	$(ARGPARSE_TOOL) markdown ./tools/argparse-tool/ec_probe.py     -o doc/ec_probe.md
+	$(ARGPARSE_TOOL) markdown ./tools/argparse-tool/nbfc_service.py -o doc/nbfc_service.md
+	$(ARGPARSE_TOOL) markdown nbfc.py                               -o doc/nbfc.md
 	
-	./tools/config_to_md.py  > doc/nbfc_service.json.md
+	./tools/config_to_md.py > doc/nbfc_service.json.md
 	
 	go-md2man < doc/ec_probe.md          > doc/ec_probe.1
 	go-md2man < doc/nbfc.md              > doc/nbfc.1
