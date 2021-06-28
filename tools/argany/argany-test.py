@@ -22,17 +22,23 @@ argp.add_argument('--choices',    help='Complete from choices', choices=(1,'two 
 argp.add_argument('-f', '--flag', help='A option flag', action='store_true')
 argp.add_argument('--range',      help='Complete a range', type=int, choices=range(1,9,2))
 argp.add_argument('--integer',    help='Option with integer', type=int)
-
-grp = argp.add_mutually_exclusive_group()
-grp.add_argument('--linux',   action='store_const', const='linux',   dest='os')
-grp.add_argument('--windows', action='store_const', const='windows', dest='os')
+argp.add_argument('--single-quote-in-description',  help="Here is a single quote: '")
+argp.add_argument('--double-quote-in-description',  help='Here is a double quote: "')
+argp.add_argument('--special-chars-in-description', help='Here are some special chars: $(echo "`ls`")')
+group = argp.add_mutually_exclusive_group()
+group.add_argument('--exclusive-1', action='store_true')
+group.add_argument('--exclusive-2', action='store_true')
 
 subp = argp.add_subparsers(description='commands')
 
-cmdp = subp.add_parser('dummy',        help='Dummy command')
+cmdp = subp.add_parser('dummy', help='Dummy command')
+
 cmdp = subp.add_parser('positionals',  help='For testing positionals')
 cmdp.add_argument('pos', help='First positional', choices=('first1', 'first2', 'first3'))
 cmdp.add_argument('opt', help='Optional positional', choices=('optional1', 'optional2'), nargs='?')
+
+cmdp = subp.add_parser('zsh', help='For testing zsh:')
+cmdp.add_argument('--argument-with-colon-in-description', help='Colon follows:')
 
 if __name__ == '__main__':
     argp.parse_args()

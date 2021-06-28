@@ -102,7 +102,7 @@ def _bash_make_optstring_test_pattern(option_strings):
         return '@(%s)' % '|'.join(option_strings)
 
     short_opts, long_opts = [], []
-    for o in a.option_strings:
+    for o in option_strings:
         if   o.startswith('--'):  long_opts.append(o[2:])
         elif o.startswith('-'):   short_opts.append(o[1:])
 
@@ -114,11 +114,13 @@ def _bash_make_optstring_test_pattern(option_strings):
 
     return "-@([%s]|-@(%s))" % (''.join(sorted(short_opts)), '|'.join(sorted(long_opts)))
 
-def _bash_complete_parser(info, p, funcname, parent_parsers=[]):
+def _bash_complete_parser(info, parser, funcname, parent_parsers=[]):
+    # The completion function returns 0 (success) if there was a match.
+
     funcname    = shell.make_identifier(funcname)
-    options     = p.get_options()
-    positionals = p.get_positionals()
-    subparsers  = p.get_subparsers()
+    options     = parser.get_options()
+    positionals = parser.get_positionals()
+    subparsers  = parser.get_subparsers()
 
     r  = f'{funcname}() {{\n'
 
@@ -132,7 +134,7 @@ def _bash_complete_parser(info, p, funcname, parent_parsers=[]):
         if len(positionals):
             # The call to _count_args allows us to complete positionals later.
             option_strings = []
-            for a in filter(lambda a: a.takes_args(), p._actions):
+            for a in filter(lambda a: a.takes_args(), parser._actions):
                 option_strings.extend(a.option_strings)
             exclude_pattern = _bash_make_optstring_test_pattern(option_strings)
             r += '  _count_args "" "%s"\n' % exclude_pattern
@@ -141,7 +143,7 @@ def _bash_complete_parser(info, p, funcname, parent_parsers=[]):
         r += '  for w in "${COMP_WORDS[@]}"; do\n'
         r += '    case "$w" in\n'
         for name in subparsers.keys():
-            f = shell.make_identifier('_%s_%s' % (p.prog, name))
+            f = shell.make_identifier('_%s_%s' % (parser.prog, name))
             r += '      %s) %s && return 0;;\n' % (shell.escape(name), f)
         r += '    esac\n'
         r += '  done\n'
@@ -160,7 +162,7 @@ def _bash_complete_parser(info, p, funcname, parent_parsers=[]):
             r += '  esac\n'
             r += '\n'
 
-    r += '  [[ "$cur" = -* ]] && %s\n' % _bash_complete('choices', p.get_all_optstrings()).to_shell(True)
+    r += '  [[ "$cur" = -* ]] && %s\n' % _bash_complete('choices', parser.get_all_optstrings()).to_shell(True)
     r += '\n'
 
     if len(positionals):
@@ -176,19 +178,19 @@ def _bash_complete_parser(info, p, funcname, parent_parsers=[]):
     r += '}\n\n'
 
     for name, sub in subparsers.items():
-        f = shell.make_identifier('_%s_%s' % (p.prog, name))
-        r += _bash_complete_parser(info, sub, f, parent_parsers+[p])
+        f = shell.make_identifier('_%s_%s' % (parser.prog, name))
+        r += _bash_complete_parser(info, sub, f, parent_parsers + [parser])
 
     return r
 
-def generate_completion(p, prog=None):
+def generate_completion(parser, prog=None):
     if prog is None:
-        prog = p.prog
+        prog = parser.prog
 
-    info = utils.ArgparseInfo.create(p)
+    info = utils.ArgparseInfo.create(parser)
     funcname = shell.make_identifier('_'+prog)
     r  = '#!/bin/bash\n\n'
-    r += _bash_complete_parser(info, p, funcname).rstrip()
+    r += _bash_complete_parser(info, parser, funcname).rstrip()
     r += '\n\n'
     r += 'complete -F %s %s' % (funcname, prog)
     return r
