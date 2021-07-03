@@ -1,6 +1,5 @@
 complete -c nbfc -s h -l help -d 'show this help message and exit'
 complete -c nbfc -l version -d "show program's version number and exit"
-complete -c nbfc -n 'test (__fish_number_of_cmd_args_wo_opts) = 1' -f -a 'start stop restart status config set help'
 # command start
 complete -c nbfc -f -n 'not __fish_seen_subcommand_from config help restart set start status stop' -d 'Start the service' -a start
 complete -c nbfc -n '__fish_seen_subcommand_from start' -s h -l help -d 'show this help message and exit'

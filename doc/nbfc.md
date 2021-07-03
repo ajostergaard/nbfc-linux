@@ -22,6 +22,9 @@ OPTIONS
   `-h, --help`
     show this help message and exit
 
+  `--version`
+    show program's version number and exit
+
   ` [start, stop, restart, status, config, set, help]`
     None
 

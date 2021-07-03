@@ -17,6 +17,10 @@ Main configuration file of nbfc\_service
   If \fB\fCtrue\fR, fan speeds will not be written to the embedded controller
 
 .PP
+\fB\fC"EmbeddedControllerType"\fR: \fIEmbeddedControllerType\fP
+  Either \fB\fCECSysLinux\fR for using the \fB\fCec\_sys\fR kernel module, or \fB\fCECLinux\fR for an alternative implementation using \fB\fC/dev/port\fR without depending on kernel modules.
+
+.PP
 \fB\fC"TargetFanSpeeds"\fR: \fIarray\_of(float)\fP
   This holds the fixed speed of the fans. A value of \fB\fC\-1\fR means the fan should be left in auto mode.
 

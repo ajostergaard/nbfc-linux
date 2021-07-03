@@ -39,7 +39,7 @@ When running NBFC for the first time, you need to give it a configuration file f
 
 If you are lucky, `sudo nbfc config --set auto` will find a matching one and set it.
 
-`sudo nbfc config --recommend` (required `dmidecode`) will give a list of configuration files that may match your laptop.
+`sudo nbfc config --recommend` (requires `dmidecode`) will give a list of configuration files that may match your laptop.
 
 With `sudo nbfc config --set <MODEL>` a configuration is selected.
 
@@ -53,7 +53,7 @@ If you wish `nbfc_service` to get started on boot, use `sudo systemctl enable nb
 Differences en detail
 ---------------------
 
-|Files                            | NBFC C#                               | NBFC C                                      |
+|Files                            | NBFC Mono                             | NBFC Linux                                  |
 |---------------------------------|---------------------------------------|----------------------------------------------
 |Systemd service file             | nbfc.service                          | nbfc\_service.service                       |
 |EC Probing tool                  | ec-probe                              | ec\_probe                                   |
@@ -67,7 +67,7 @@ Differences en detail
 
 - The original NBFC service adjusts the fan speeds in intervals of `EcPollIntervall` according to `TemperatureThresholds`. - NBFC Linux directly sets the fan speed (also according to `TemperatureThresholds`).
 
-- The original NBFC service provided an `Autostart` option. - NBFC Linux dropped that option, it relies on the systemd service file only.
+- NBFC Linux dropped the `Autostart` option, since it relies on the systemd service file only.
 
 Troubleshooting
 ---------------

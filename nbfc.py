@@ -200,7 +200,7 @@ def restart(opts):
     service.restart(opts.readonly)
 
 argp = argparse.ArgumentParser(prog='nbfc', description='NoteBook FanControl CLI Client')
-argp.add_argument('--version', action='version', version='nbfc 0.1.0')
+argp.add_argument('--version', action='version', version='nbfc 0.1.2')
 subp = argp.add_subparsers(description='commands')
 
 cmdp = subp.add_parser('start',       help='Start the service')
