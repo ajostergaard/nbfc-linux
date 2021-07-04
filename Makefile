@@ -44,9 +44,9 @@ clean:
 	(cd src; make clean)
 
 clean_generated: clean
-	rm -rf doc completion etc/nbfc/configs
+	rm -rf doc etc/nbfc/configs
 
-generated: doc completion etc/nbfc/configs .force
+generated: doc etc/nbfc/configs .force
 
 # =============================================================================
 # Binaries ====================================================================
@@ -67,25 +67,6 @@ etc/nbfc/configs: .force
 	[ -e nbfc ] || git clone https://github.com/hirschmann/nbfc
 	./tools/config_to_json.py nbfc/Configs/*
 	mv nbfc/Configs/*.json etc/nbfc/configs/
-
-# =============================================================================
-# Completion ==================================================================
-# =============================================================================
-
-completion: .force
-	mkdir -p completion/bash completion/fish completion/zsh
-	
-	$(ARGPARSE_TOOL) zsh  ./nbfc.py -o completion/zsh/_nbfc
-	$(ARGPARSE_TOOL) fish ./nbfc.py -o completion/fish/nbfc.fish
-	$(ARGPARSE_TOOL) bash ./nbfc.py -o completion/bash/nbfc
-	
-	$(ARGPARSE_TOOL) zsh  ./tools/argparse-tool/nbfc_service.py -o completion/zsh/_nbfc_service
-	$(ARGPARSE_TOOL) fish ./tools/argparse-tool/nbfc_service.py -o completion/fish/nbfc_service.fish
-	$(ARGPARSE_TOOL) bash ./tools/argparse-tool/nbfc_service.py -o completion/bash/nbfc_service
-	
-	$(ARGPARSE_TOOL) zsh  ./tools/argparse-tool/ec_probe.py -o completion/zsh/_ec_probe
-	$(ARGPARSE_TOOL) fish ./tools/argparse-tool/ec_probe.py -o completion/fish/ec_probe.fish
-	$(ARGPARSE_TOOL) bash ./tools/argparse-tool/ec_probe.py -o completion/bash/ec_probe
 
 # =============================================================================
 # Documentation ===============================================================
