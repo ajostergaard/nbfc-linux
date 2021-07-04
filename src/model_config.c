@@ -1,4 +1,4 @@
-#include "config.h"
+#include "model_config.h"
 #include "memory.h"
 #include "stringbuf.h"
 #include "nxjson_utils.h"
@@ -157,7 +157,7 @@ static array_of(TemperatureThreshold) Config_DefaultTemperatureThresholds = {
   ARRAY_SIZE(___Config_DefaultTemperatureThresholds)
 };
 
-#include "generated/config.generated.c"
+#include "generated/model_config.generated.c"
 
 // ============================================================================
 // Validation code

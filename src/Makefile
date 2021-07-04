@@ -5,7 +5,6 @@ debug:   nbfc_service-debug ec_probe-debug
 
 nbfc_service-debug: \
 	build.c \
-	config.c config.h \
 	ec_debug.h ec_debug.c \
 	ec_dummy.h ec_dummy.c \
 	ec_linux.c ec_linux.h \
@@ -14,13 +13,14 @@ nbfc_service-debug: \
 	fan.c fan.h \
 	fs_sensors.c fs_sensors.h \
 	generated/nbfc_service.help.h \
-	generated/config.generated.c \
-	generated/config.generated.h \
+	generated/model_config.generated.c \
+	generated/model_config.generated.h \
 	info.c info.h \
 	lm_sensors.c lm_sensors.h \
 	macros.h \
 	main.c \
 	memory.c memory.h \
+	model_config.c model_config.h \
 	nbfc.h \
 	nbfc_service.c nbfc_service.h \
 	nxjson.c nxjson.h \
@@ -33,7 +33,6 @@ nbfc_service-debug: \
 
 nbfc_service: \
 	build.c \
-	config.c config.h \
 	ec_debug.h ec_debug.c \
 	ec_dummy.h ec_dummy.c \
 	ec_linux.c ec_linux.h \
@@ -42,13 +41,14 @@ nbfc_service: \
 	fan.c fan.h \
 	fs_sensors.c fs_sensors.h \
 	generated/nbfc_service.help.h \
-	generated/config.generated.c \
-	generated/config.generated.h \
+	generated/model_config.generated.c \
+	generated/model_config.generated.h \
 	info.c info.h \
 	lm_sensors.c lm_sensors.h \
 	macros.h \
 	main.c \
 	memory.c memory.h \
+	model_config.c model_config.h \
 	nbfc.h \
 	nbfc_service.c nbfc_service.h \
 	nxjson.c nxjson.h \
@@ -81,11 +81,10 @@ ec_probe: \
 
 generated/: .force
 	mkdir -p generated
-	../tools/config.py source > generated/config.generated.c
-	../tools/config.py header > generated/config.generated.h
-	../tools/argany/argany.py \
-		printf ../tools/argany/nbfc_service.py -o generated/nbfc_service.help.h ';'\
-		printf ../tools/argany/ec_probe.py     -o generated/ec_probe.help.h
+	../tools/config.py source > generated/model_config.generated.c
+	../tools/config.py header > generated/model_config.generated.h
+	argparse-tool printf ../tools/argparse-tool/nbfc_service.py -o generated/nbfc_service.help.h
+	argparse-tool printf ../tools/argparse-tool/ec_probe.py     -o generated/ec_probe.help.h
 
 clean:
 	rm -f nbfc_service ec_probe nbfc_service-debug ec_probe-debug a.out

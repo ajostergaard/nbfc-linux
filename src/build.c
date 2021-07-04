@@ -7,7 +7,7 @@
 
 #include "fs_sensors.c"
 
-#include "config.c"
+#include "model_config.c"
 #include "error.c"
 #include "fan.c"
 #include "info.c"

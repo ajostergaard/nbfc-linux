@@ -1,7 +1,7 @@
 #ifndef NBFC_NBFC_H_
 #define NBFC_NBFC_H_
 
-#include "config.h"
+#include "model_config.h"
 #include "macros.h"
 #include "error.h"
 #include "ec.h"

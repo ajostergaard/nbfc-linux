@@ -1,5 +1,5 @@
-#ifndef NBFC_CONFIG_H_
-#define NBFC_CONFIG_H_
+#ifndef NBFC_MODEL_CONFIG_H_
+#define NBFC_MODEL_CONFIG_H_
 
 #if defined(__GNUC__) || defined(__GNUG__) || defined(__clang__)
 
@@ -54,10 +54,10 @@ typedef char                          Boolean;
 
 #endif /* packed enums */
 
-#include "macros.h" // config.generated.h
-#include "nxjson.h" // config.generated.h
-#include "error.h"  // config.generated.h
-#include "generated/config.generated.h"
+#include "macros.h" // model_config.generated.h
+#include "nxjson.h" // model_config.generated.h
+#include "error.h"  // model_config.generated.h
+#include "generated/model_config.generated.h"
 
 Error* Config_Validate(Config*);
 Error* Config_FromFile(Config*, const char*);

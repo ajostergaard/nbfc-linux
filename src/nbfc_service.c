@@ -10,7 +10,7 @@
 #include "memory.h"
 #include "macros.h"
 #include "info.h"
-#include "config.h"
+#include "model_config.h"
 
 #include <string.h> // memcpy
 #include <unistd.h> // usleep
@@ -19,7 +19,7 @@
 
 Service_Options options;
 
-static Config            config;
+static Config            model_config;
 static Sensor_VTable*    sensor;
 static TemperatureFilter temp_filter;
 static array_of(Fan)     fans;
@@ -40,24 +40,24 @@ Error* Service_Init() {
 
   char* path = (char*)Temp_Malloc(PATH_MAX, 1);
   snprintf(path, PATH_MAX, "./%s/%s.json", NBFC_CONFIGS_DIR, service_config.SelectedConfigId);
-  e = Config_FromFile(&config, path);
+  e = Config_FromFile(&model_config, path);
   if (e) {
     snprintf(path, PATH_MAX, "%s/%s.json", NBFC_CONFIGS_DIR, service_config.SelectedConfigId);
-    e = Config_FromFile(&config, path);
+    e = Config_FromFile(&model_config, path);
   }
   e_check();
-  e = Config_Validate(&config);
+  e = Config_Validate(&model_config);
   e_check();
 
-  fans.size = config.FanConfigurations.size;
+  fans.size = model_config.FanConfigurations.size;
   fans.data = (Fan*) Mem_Calloc(fans.size, sizeof(Fan));
 
   for_enumerate_array(size_t, i, fans) {
     e = Fan_Init(
         &fans.data[i],
-        &config.FanConfigurations.data[i],
-        config.CriticalTemperature,
-        config.ReadWriteWords
+        &model_config.FanConfigurations.data[i],
+        model_config.CriticalTemperature,
+        model_config.ReadWriteWords
     );
     e_check();
   }
@@ -86,7 +86,7 @@ Error* Service_Init() {
 
   e = Info_Init(options.state_file);
   e_check();
-  e = TemperatureFilter_Init(&temp_filter, config.EcPollInterval, NBFC_TEMPERATURE_FILTER_TIMESPAN);
+  e = TemperatureFilter_Init(&temp_filter, model_config.EcPollInterval, NBFC_TEMPERATURE_FILTER_TIMESPAN);
   e_check();
 
   if (options.read_only)
@@ -142,7 +142,7 @@ Error* Service_Loop() {
     }
   }
 
-  e = Info_Write(&config, current_temperature, options.read_only, &fans);
+  e = Info_Write(&model_config, current_temperature, options.read_only, &fans);
   return e;
 }
 
@@ -150,7 +150,7 @@ void Service_Error(Error* e) {
   static int failures;
 
   if (! e) {
-    usleep(config.EcPollInterval * 1000);
+    usleep(model_config.EcPollInterval * 1000);
     failures = 0;
     return;
   }
@@ -210,7 +210,7 @@ static Error* ResetEC() {
 
 static Error* ResetRegisterWriteConfigs() {
   Error* e = NULL;
-  for_each_array(RegisterWriteConfiguration*, cfg, config.RegisterWriteConfigurations)
+  for_each_array(RegisterWriteConfiguration*, cfg, model_config.RegisterWriteConfigurations)
     if (cfg->ResetRequired) {
       e = ApplyRegisterWriteConfig(cfg->Register, cfg->ResetValue, cfg->ResetWriteMode);
       e_warn();
@@ -233,7 +233,7 @@ static Error* ApplyRegisterWriteConfig(int register_, uint8_t value, RegisterWri
 }
 
 static Error* ApplyRegisterWriteConfgurations(bool initializing) {
-  for_each_array(RegisterWriteConfiguration*, cfg, config.RegisterWriteConfigurations) {
+  for_each_array(RegisterWriteConfiguration*, cfg, model_config.RegisterWriteConfigurations) {
     if (initializing || cfg->WriteOccasion == RegisterWriteOccasion_OnWriteFanSpeed) {
        Error* e = ApplyRegisterWriteConfig(cfg->Register, cfg->Value, cfg->WriteMode);
        e_check();

@@ -23,7 +23,7 @@ Error* Fan_Init(Fan* self, FanConfiguration* cfg, int criticalTemperature, bool 
   my.minSpeedValueReadAbs = min(my.minSpeedValueRead, my.maxSpeedValueRead);
   my.maxSpeedValueReadAbs = max(my.minSpeedValueRead, my.maxSpeedValueRead);
 
-  // TODO #1: How to handle empty TemperatureThresholds? [see config.c]
+  // TODO #1: How to handle empty TemperatureThresholds? [see model_config.c]
   if (! cfg->TemperatureThresholds.size)
     return err_string(0, "Invalid size for cfg->TemperatureThresholds");
 

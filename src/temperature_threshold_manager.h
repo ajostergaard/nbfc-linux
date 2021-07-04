@@ -1,7 +1,7 @@
 #ifndef NBFC_TEMPERATURE_THRESHOLD_MANAGER_H_
 #define NBFC_TEMPERATURE_THRESHOLD_MANAGER_H_
 
-#include "config.h"
+#include "model_config.h"
 #include "error.h"
 
 typedef struct ThresholdManager ThresholdManager;

@@ -2,7 +2,7 @@
 #define NBFC_SERVICE_H_
 
 #include "error.h"
-#include "config.h"
+#include "model_config.h"
 
 typedef struct Service_Options Service_Options;
 struct Service_Options {
