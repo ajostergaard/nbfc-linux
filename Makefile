@@ -46,7 +46,7 @@ clean:
 clean_generated: clean
 	rm -rf doc etc/nbfc/configs
 
-generated: doc etc/nbfc/configs .force
+generated: etc/nbfc/configs
 
 # =============================================================================
 # Binaries ====================================================================
